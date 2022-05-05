@@ -7,7 +7,12 @@ import Main from "../components/Main";
 import { client } from "../lib/client";
 import { useAppContext } from "../context/AppContext";
 
-export default function Home({ bannerData, marketingData, isLoaded }) {
+export default function Home({
+  bannerData,
+  marketingData,
+  mainData,
+  isLoaded,
+}) {
   const { setIsLoaded } = useAppContext();
 
   useEffect(() => {
@@ -24,23 +29,29 @@ export default function Home({ bannerData, marketingData, isLoaded }) {
       <Navbar />
       <Banner bannerData={bannerData} />
       <Marketing marketingData={marketingData} />
-      <Main />
+      <Main mainData={mainData} />
     </div>
   );
 }
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   //get banner data
   const bannerQuery = `*[_type == "banner"]`;
   const bannerData = await client.fetch(bannerQuery);
   //get marketing data
   const marketingQuery = `*[_type == "marketing"]`;
   const marketingData = await client.fetch(marketingQuery);
+  //get main data
+  const mainQuery = `*[_type == "mainTypes"]{
+    _id, name,items[]->
+  }`;
+  const mainData = await client.fetch(mainQuery);
 
   return {
     props: {
       bannerData,
       marketingData,
+      mainData,
       isLoaded: true,
     },
   };
