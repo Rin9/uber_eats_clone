@@ -12,7 +12,12 @@ export default {
       name: "items",
       title: "Items",
       type: "array",
-      of: [{ type: "reference", to: { type: "main" } }],
+      of: [
+        {
+          type: "reference",
+          to: { type: "main" },
+        },
+      ],
     },
   ],
 };

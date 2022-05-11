@@ -22,6 +22,16 @@ export default {
       type: "boolean",
     },
     {
+      name: "deal",
+      title: "Deal",
+      type: "boolean",
+    },
+    {
+      name: "tops",
+      title: "Tops",
+      type: "boolean",
+    },
+    {
       name: "score",
       title: "Score",
       type: "number",
@@ -32,9 +42,20 @@ export default {
       type: "number",
     },
     {
-      name: "deliveryTime",
-      title: "DeliveryTime",
-      type: "string",
+      name: "minDeliveryTime",
+      title: "MinDeliveryTime",
+      type: "number",
+    },
+    {
+      name: "maxDeliveryTime",
+      title: "MaxDeliveryTime",
+      type: "number",
+    },
+    {
+      name: "type",
+      title: "Type",
+      type: "reference",
+      to: [{ type: "mainTypes" }],
     },
   ],
 };

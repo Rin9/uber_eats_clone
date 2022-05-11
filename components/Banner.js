@@ -3,7 +3,6 @@ import React from "react";
 import { urlFor } from "../lib/client";
 import Link from "next/link";
 import { useAppContext } from "../context/AppContext";
-import Router from "next/router";
 
 const BannerItem = ({ item, isLoaded }) => {
   return (
@@ -45,8 +44,8 @@ const Banner = ({ bannerData }) => {
       justify={{ base: "", md: "space-evenly" }}
       align="center"
       overflowX="auto"
-      columnGap={{ base: "20px" }}
-      paddingX={{ base: "20px", md: "" }}
+      columnGap={{ base: "10px" }}
+      width={{ base: "100vw", lg: "100vw" }}
     >
       {bannerData.map((item) => {
         return <BannerItem key={item._id} item={item} isLoaded={isLoaded} />;

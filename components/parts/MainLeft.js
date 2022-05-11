@@ -24,53 +24,63 @@ import { RiLeafLine, RiHeartPulseFill } from "react-icons/ri";
 import { useAppContext } from "../../context/AppContext";
 
 const MainLeft = () => {
-  const {
-    sortState,
-    setSortState,
-    switchValue,
-    setSwitchValue,
-    priceTag,
-    setPriceTag,
-    deliveryFee,
-    setDeliveryFee,
-    dietary,
-    setDietary,
-  } = useAppContext();
+  const { filterState, setFilterState } = useAppContext();
 
   // handle filter change
   const handleFilterChange = (e, type) => {
+    e.preventDefault();
     if (type === "sort") {
-      setSortState(e.target.value);
-    }
-    if (type.includes("switch")) {
-      setSwitchValue((prev) => {
+      setFilterState((prev) => {
         return {
           ...prev,
-          [type]: !prev[type],
+          sort: e.target.value,
+        };
+      });
+      // setSortState(e.target.value);
+    }
+    if (type.includes("switch")) {
+      // console.log("This is e", e);
+      // console.log("This is type", type);
+      setFilterState((prev) => {
+        return {
+          ...prev,
+          switch: {
+            ...prev.switch,
+            [type]: !prev.switch[type],
+          },
         };
       });
     }
     if (type.includes("price")) {
-      setPriceTag((prev) => {
+      setFilterState((prev) => {
         return {
           ...prev,
-          [type]: !prev[type],
+          price: {
+            ...prev.price,
+            [type]: !prev.price[type],
+          },
         };
       });
     }
     if (type.includes("delivery")) {
-      setDeliveryFee((prev) => {
+      setFilterState((prev) => {
         return {
           ...prev,
-          [type]: !prev[type],
+          delivery: {
+            ...prev.delivery,
+            [type]: !prev.delivery[type],
+          },
         };
       });
     }
     if (type.includes("dietary")) {
-      setDietary((prev) => {
+      setFilterState((prev) => {
         return {
           ...prev,
-          [type]: !prev[type],
+          dietary: {
+            ...prev.dietary,
+            [type]: !prev.dietary[type],
+          },
         };
       });
     }
@@ -86,9 +96,9 @@ const MainLeft = () => {
     >
       <Heading as={"h3"}>80 stores</Heading>
       {/* todo: fix the link */}
-      <Link href="/" passHref>
-        <InnerLink textDecor="underline">Clear All</InnerLink>
-      </Link>
+      {/* <Link href="/" passHref>
+                <InnerLink textDecor="underline">Clear All</InnerLink>
+              </Link> */}
       <Accordion width="20vw" defaultIndex={[0, 1, 2, 3, 4]} allowMultiple>
         {/* sort */}
         <AccordionItem border="none">
@@ -103,7 +113,7 @@ const MainLeft = () => {
           <AccordionPanel pb={4} px="10px">
             <RadioGroup
               onChange={() => handleFilterChange(event, "sort")}
-              value={sortState}
+              value={filterState.sort}
             >
               <Stack direction="column">
                 <Radio value="pfy" colorScheme="black">
@@ -151,7 +161,7 @@ const MainLeft = () => {
                     id="deals"
                     colorScheme="black"
                     size="lg"
-                    value={switchValue["switch-1"]}
+                    value={filterState.switch["switch-1"]}
                     onChange={() => handleFilterChange(event, "switch-1")}
                   />
                 </Box>
@@ -163,7 +173,7 @@ const MainLeft = () => {
                     id="tops"
                     colorScheme="black"
                     size="lg"
-                    value={switchValue["switch-2"]}
+                    value={filterState.switch["switch-2"]}
                     onChange={() => handleFilterChange(event, "switch-2")}
                   />
                 </Box>
@@ -188,32 +198,32 @@ const MainLeft = () => {
               <Button
                 rounded="full"
                 onClick={() => handleFilterChange(event, "price-1")}
-                background={priceTag["price-1"] ? "black" : "gray.100"}
-                color={priceTag["price-1"] ? "white" : "black"}
+                background={filterState.price["price-1"] ? "black" : "gray.100"}
+                color={filterState.price["price-1"] ? "white" : "black"}
               >
                 $
               </Button>
               <Button
                 rounded="full"
                 onClick={() => handleFilterChange(event, "price-2")}
-                background={priceTag["price-2"] ? "black" : "gray.100"}
-                color={priceTag["price-2"] ? "white" : "black"}
+                background={filterState.price["price-2"] ? "black" : "gray.100"}
+                color={filterState.price["price-2"] ? "white" : "black"}
               >
                 $$
               </Button>
               <Button
                 rounded="full"
                 onClick={() => handleFilterChange(event, "price-3")}
-                background={priceTag["price-3"] ? "black" : "gray.100"}
-                color={priceTag["price-3"] ? "white" : "black"}
+                background={filterState.price["price-3"] ? "black" : "gray.100"}
+                color={filterState.price["price-3"] ? "white" : "black"}
               >
                 $$$
               </Button>
               <Button
                 rounded="full"
                 onClick={() => handleFilterChange(event, "price-4")}
-                background={priceTag["price-4"] ? "black" : "gray.100"}
-                color={priceTag["price-4"] ? "white" : "black"}
+                background={filterState.price["price-4"] ? "black" : "gray.100"}
+                color={filterState.price["price-4"] ? "white" : "black"}
               >
                 $$$$
               </Button>
@@ -237,32 +247,40 @@ const MainLeft = () => {
               <Button
                 rounded="full"
                 onClick={() => handleFilterChange(event, "delivery-1")}
-                background={deliveryFee["delivery-1"] ? "black" : "gray.100"}
-                color={deliveryFee["delivery-1"] ? "white" : "black"}
+                background={
+                  filterState.delivery["delivery-1"] ? "black" : "gray.100"
+                }
+                color={filterState.delivery["delivery-1"] ? "white" : "black"}
               >
                 $2
               </Button>
               <Button
                 rounded="full"
                 onClick={() => handleFilterChange(event, "delivery-2")}
-                background={deliveryFee["delivery-2"] ? "black" : "gray.100"}
-                color={deliveryFee["delivery-2"] ? "white" : "black"}
+                background={
+                  filterState.delivery["delivery-2"] ? "black" : "gray.100"
+                }
+                color={filterState.delivery["delivery-2"] ? "white" : "black"}
               >
                 $3
               </Button>
               <Button
                 rounded="full"
                 onClick={() => handleFilterChange(event, "delivery-3")}
-                background={deliveryFee["delivery-3"] ? "black" : "gray.100"}
-                color={deliveryFee["delivery-3"] ? "white" : "black"}
+                background={
+                  filterState.delivery["delivery-3"] ? "black" : "gray.100"
+                }
+                color={filterState.delivery["delivery-3"] ? "white" : "black"}
               >
                 $4
               </Button>
               <Button
                 rounded="full"
                 onClick={() => handleFilterChange(event, "delivery-4")}
-                background={deliveryFee["delivery-4"] ? "black" : "gray.100"}
-                color={deliveryFee["delivery-4"] ? "white" : "black"}
+                background={
+                  filterState.delivery["delivery-4"] ? "black" : "gray.100"
+                }
+                color={filterState.delivery["delivery-4"] ? "white" : "black"}
               >
                 $4+
               </Button>
@@ -285,8 +303,10 @@ const MainLeft = () => {
                 leftIcon={<RiLeafLine />}
                 rounded="full"
                 onClick={() => handleFilterChange(event, "dietary-1")}
-                background={dietary["dietary-1"] ? "black" : "gray.100"}
-                color={dietary["dietary-1"] ? "white" : "black"}
+                background={
+                  filterState.dietary["dietary-1"] ? "black" : "gray.100"
+                }
+                color={filterState.dietary["dietary-1"] ? "white" : "black"}
               >
                 Vegetarian
               </Button>
@@ -294,8 +314,10 @@ const MainLeft = () => {
                 leftIcon={<RiHeartPulseFill />}
                 rounded="full"
                 onClick={() => handleFilterChange(event, "dietary-2")}
-                background={dietary["dietary-2"] ? "black" : "gray.100"}
-                color={dietary["dietary-2"] ? "white" : "black"}
+                background={
+                  filterState.dietary["dietary-2"] ? "black" : "gray.100"
+                }
+                color={filterState.dietary["dietary-2"] ? "white" : "black"}
               >
                 Vegan
               </Button>

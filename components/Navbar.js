@@ -12,13 +12,10 @@ import {
   PopoverBody,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Switch } from "@headlessui/react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import Image from "next/image";
 import logo from "../public/assets/logo.svg";
-import { useAppContext } from "../context/AppContext";
-import useWindowSize from "../lib/utils/useWindowSize";
 import DrawerComponent from "./parts/DrawerComponent";
 
 // const SwitchComponent = () => {
@@ -42,14 +39,12 @@ import DrawerComponent from "./parts/DrawerComponent";
 // };
 
 const Navbar = () => {
-  // const { isDelivery, setIsDelivery } = useAppContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { width } = useWindowSize();
   return (
     // Main container of the navbar
     <Flex
-      width="100%"
+      width={{ base: "100vw", lg: "100vw" }}
       minH="100px"
       boxShadow="md"
       rounded="md"

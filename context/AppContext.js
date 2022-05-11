@@ -8,6 +8,29 @@ export const AppContext = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   // filter part start
+  const [filterState, setFilterState] = useState({
+    sort: "pfy",
+    switch: {
+      "switch-1": false,
+      "switch-2": false,
+    },
+    price: {
+      "price-1": false,
+      "price-2": false,
+      "price-3": false,
+      "price-4": false,
+    },
+    delivery: {
+      "delivery-1": false,
+      "delivery-2": false,
+      "delivery-3": false,
+      "delivery-4": false,
+    },
+    dietary: {
+      "dietary-1": false,
+      "dietary-2": false,
+    },
+  });
   // this is for sort
   const [sortState, setSortState] = useState("pfy");
   //this is for the switch in from uber eats
@@ -53,6 +76,8 @@ export const AppContext = ({ children }) => {
         setDeliveryFee,
         dietary,
         setDietary,
+        filterState,
+        setFilterState,
       }}
     >
       {children}

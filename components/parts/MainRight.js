@@ -6,12 +6,35 @@ import {
   IconButton,
   Text,
   Box,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  RadioGroup,
+  Radio,
+  Stack,
+  FormControl,
+  Switch,
+  FormLabel,
+  HStack,
+  Button,
+  VStack,
+  Skeleton,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { urlFor } from "../../lib/client";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
+import { CgMenuRight } from "react-icons/cg";
+import { RiLeafLine, RiHeartPulseFill } from "react-icons/ri";
 import Slider from "react-slick";
 import { formatPrice, truncate } from "../../lib/utils/util";
+import { useAppContext } from "../../context/AppContext";
+import useFetchData from "../../lib/useFetchData";
+import useSWR from "swr";
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
 // Settings for the slider
 const settings = {
   dots: false,
@@ -47,6 +70,7 @@ const settings = {
 
 const SectionItem = ({ item }) => {
   return (
+    // <Skeleton height="200px" width="200px">
     <Flex direction="column" rowGap="10px" justify="flex-start">
       <Box
         key={item._id}
@@ -76,9 +100,12 @@ const SectionItem = ({ item }) => {
       {/* delivery tag */}
       <Flex align="center">
         {formatPrice(parseInt(item.deliveryFee))} Delivery Fee &nbsp;•&nbsp;
-        <Text fontWeight="lighter">{item.deliveryTime} min</Text>
+        <Text fontWeight="lighter">
+          {item.minDeliveryTime} - {item.maxDeliveryTime} min
+        </Text>
       </Flex>
     </Flex>
+    // </Skeleton>
   );
 };
 
@@ -86,13 +113,13 @@ const Section = ({ data }) => {
   // change the state
   const [slider, setSlider] = React.useState();
   return (
-    <Flex direction="column" width="100%" ml={{ base: "20px", lg: "0px" }}>
+    <Flex direction="column" width="100%" pl={{ base: "20px", lg: "0px" }}>
       <Flex width="100%" align="center" justify="space-between">
         <Heading as={"h2"}>{data.name}</Heading>
-        <Flex align="center" minW="150px" justify="space-between" mr="20px">
-          <Link href="/" passHref>
+        <Flex align="center" minW="150px" justify="flex-end" pr="20px">
+          {/* <Link href="/" passHref>
             <InnerLink textDecor="underline">See All</InnerLink>
-          </Link>
+          </Link> */}
           <Flex dir="row" columnGap="10px">
             <IconButton
               rounded="full"
@@ -140,16 +167,388 @@ const Section = ({ data }) => {
   );
 };
 
-const MainRight = ({ mainData }) => {
+// const MainRight = ({ mainData }) => {
+const MainRight = () => {
+  const { filterState, setFilterState } = useAppContext();
+  // const [mainDataLoaded, setMainDataLoaded] = useState(false);
+
+  // handle filter change
+  const handleFilterChange = (e, type) => {
+    e.preventDefault();
+    if (type === "sort") {
+      setFilterState((prev) => {
+        return {
+          ...prev,
+          sort: e.target.value,
+        };
+      });
+      // setSortState(e.target.value);
+    }
+    if (type.includes("switch")) {
+      // console.log("This is e", e);
+      // console.log("This is type", type);
+      setFilterState((prev) => {
+        return {
+          ...prev,
+          switch: {
+            ...prev.switch,
+            [type]: !prev.switch[type],
+          },
+        };
+      });
+    }
+    if (type.includes("price")) {
+      setFilterState((prev) => {
+        return {
+          ...prev,
+          price: {
+            ...prev.price,
+            [type]: !prev.price[type],
+          },
+        };
+      });
+    }
+    if (type.includes("delivery")) {
+      setFilterState((prev) => {
+        return {
+          ...prev,
+          delivery: {
+            ...prev.delivery,
+            [type]: !prev.delivery[type],
+          },
+        };
+      });
+    }
+    if (type.includes("dietary")) {
+      setFilterState((prev) => {
+        return {
+          ...prev,
+          dietary: {
+            ...prev.dietary,
+            [type]: !prev.dietary[type],
+          },
+        };
+      });
+    }
+  };
+
+  // const result = useFetchData();
+  const { data: mainData, error } = useSWR(
+    `/api/data/${JSON.stringify(filterState)}`,
+    fetcher
+  );
+  console.log("Fetched data", mainData);
+
   return (
     <Flex
       direction="column"
       rowGap="20px"
       width={{ base: "100vw", lg: "70vw" }}
     >
-      {mainData.map((item) => {
-        return <Section data={item} key={item._id} />;
-      })}
+      {/* this is the filter for small screen */}
+      <Flex display={{ base: "flex", lg: "none" }} width="100vw">
+        {/* this is filter */}
+        <Accordion allowToggle width="100%">
+          <AccordionItem border="none" margin="0">
+            <h2>
+              <AccordionButton margin="0" justifyContent="flex-end">
+                {/* <Box flex="1" textAlign="left">
+                  Filter
+                </Box> */}
+                <CgMenuRight />
+              </AccordionButton>
+            </h2>
+            <AccordionPanel pb={4}>
+              <Heading as={"h3"}>80 stores</Heading>
+              {/* todo: fix the link */}
+              {/* <Link href="/" passHref>
+                <InnerLink textDecor="underline">Clear All</InnerLink>
+              </Link> */}
+              <Accordion
+                width="100%"
+                defaultIndex={[0, 1, 2, 3, 4]}
+                allowMultiple
+              >
+                {/* sort */}
+                <AccordionItem border="none">
+                  <AccordionButton px="0">
+                    <Box flex="1" textAlign="left">
+                      <Heading as={"h4"} fontSize="2xl">
+                        Sort
+                      </Heading>
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                  <AccordionPanel pb={4} px="10px">
+                    <RadioGroup
+                      onChange={() => handleFilterChange(event, "sort")}
+                      value={filterState.sort}
+                    >
+                      <Stack direction="column">
+                        <Radio value="pfy" colorScheme="black">
+                          Picked for you
+                        </Radio>
+                        <Radio value="mp" colorScheme="black">
+                          Most popular
+                        </Radio>
+                        <Radio value="r" colorScheme="black">
+                          Rating
+                        </Radio>
+                        <Radio value="dt" colorScheme="black">
+                          Delivery time
+                        </Radio>
+                      </Stack>
+                    </RadioGroup>
+                  </AccordionPanel>
+                </AccordionItem>
+                {/* From Uber Eats */}
+                <AccordionItem border="none">
+                  <h2>
+                    <AccordionButton px="0">
+                      <Box flex="1" textAlign="left">
+                        <Heading as={"h4"} fontSize="2xl">
+                          From Uber Eats
+                        </Heading>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4} px="0">
+                    <Stack direction="column" pl="10px">
+                      <FormControl
+                        display="flex"
+                        flexDir="column"
+                        rowGap="20px"
+                        alignItems="flex-start"
+                        pr="20px"
+                      >
+                        <Box
+                          width="100%"
+                          display="flex"
+                          justifyContent="space-between"
+                        >
+                          <FormLabel htmlFor="deals" mb="0">
+                            Deals
+                          </FormLabel>
+                          <Switch
+                            id="deals"
+                            colorScheme="black"
+                            size="lg"
+                            value={filterState.switch["switch-1"]}
+                            onChange={() =>
+                              handleFilterChange(event, "switch-1")
+                            }
+                          />
+                        </Box>
+                        <Box
+                          width="100%"
+                          display="flex"
+                          justifyContent="space-between"
+                        >
+                          <FormLabel htmlFor="tops" mb="0">
+                            Tops
+                          </FormLabel>
+                          <Switch
+                            id="tops"
+                            colorScheme="black"
+                            size="lg"
+                            value={filterState.switch["switch-2"]}
+                            onChange={() =>
+                              handleFilterChange(event, "switch-2")
+                            }
+                          />
+                        </Box>
+                      </FormControl>
+                    </Stack>
+                  </AccordionPanel>
+                </AccordionItem>
+                {/* Price Range */}
+                <AccordionItem border="none">
+                  <h2>
+                    <AccordionButton px="0">
+                      <Box flex="1" textAlign="left">
+                        <Heading as={"h4"} fontSize="2xl">
+                          Price Range
+                        </Heading>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4} px="0">
+                    <HStack pl="10px">
+                      <Button
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "price-1")}
+                        background={
+                          filterState.price["price-1"] ? "black" : "gray.100"
+                        }
+                        color={filterState.price["price-1"] ? "white" : "black"}
+                      >
+                        $
+                      </Button>
+                      <Button
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "price-2")}
+                        background={
+                          filterState.price["price-2"] ? "black" : "gray.100"
+                        }
+                        color={filterState.price["price-2"] ? "white" : "black"}
+                      >
+                        $$
+                      </Button>
+                      <Button
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "price-3")}
+                        background={
+                          filterState.price["price-3"] ? "black" : "gray.100"
+                        }
+                        color={filterState.price["price-3"] ? "white" : "black"}
+                      >
+                        $$$
+                      </Button>
+                      <Button
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "price-4")}
+                        background={
+                          filterState.price["price-4"] ? "black" : "gray.100"
+                        }
+                        color={filterState.price["price-4"] ? "white" : "black"}
+                      >
+                        $$$$
+                      </Button>
+                    </HStack>
+                  </AccordionPanel>
+                </AccordionItem>
+                {/* Max Delivery Fee */}
+                <AccordionItem border="none">
+                  <h2>
+                    <AccordionButton px="0">
+                      <Box flex="1" textAlign="left">
+                        <Heading as={"h4"} fontSize="2xl">
+                          Max Delivery Fee
+                        </Heading>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4} px="0">
+                    <HStack pl="10px">
+                      <Button
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "delivery-1")}
+                        background={
+                          filterState.delivery["delivery-1"]
+                            ? "black"
+                            : "gray.100"
+                        }
+                        color={
+                          filterState.delivery["delivery-1"] ? "white" : "black"
+                        }
+                      >
+                        $2
+                      </Button>
+                      <Button
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "delivery-2")}
+                        background={
+                          filterState.delivery["delivery-2"]
+                            ? "black"
+                            : "gray.100"
+                        }
+                        color={
+                          filterState.delivery["delivery-2"] ? "white" : "black"
+                        }
+                      >
+                        $3
+                      </Button>
+                      <Button
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "delivery-3")}
+                        background={
+                          filterState.delivery["delivery-3"]
+                            ? "black"
+                            : "gray.100"
+                        }
+                        color={
+                          filterState.delivery["delivery-3"] ? "white" : "black"
+                        }
+                      >
+                        $4
+                      </Button>
+                      <Button
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "delivery-4")}
+                        background={
+                          filterState.delivery["delivery-4"]
+                            ? "black"
+                            : "gray.100"
+                        }
+                        color={
+                          filterState.delivery["delivery-4"] ? "white" : "black"
+                        }
+                      >
+                        $4+
+                      </Button>
+                    </HStack>
+                  </AccordionPanel>
+                </AccordionItem>
+                {/* Dietary */}
+                <AccordionItem border="none">
+                  <AccordionButton px="0">
+                    <Box flex="1" textAlign="left">
+                      <Heading as={"h4"} fontSize="2xl">
+                        Dietary
+                      </Heading>
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                  <AccordionPanel pb={4} px="0">
+                    <VStack pl="10px" alignItems="flex-start" gap="10px">
+                      <Button
+                        leftIcon={<RiLeafLine />}
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "dietary-1")}
+                        background={
+                          filterState.dietary["dietary-1"]
+                            ? "black"
+                            : "gray.100"
+                        }
+                        color={
+                          filterState.dietary["dietary-1"] ? "white" : "black"
+                        }
+                      >
+                        Vegetarian
+                      </Button>
+                      <Button
+                        leftIcon={<RiHeartPulseFill />}
+                        rounded="full"
+                        onClick={() => handleFilterChange(event, "dietary-2")}
+                        background={
+                          filterState.dietary["dietary-2"]
+                            ? "black"
+                            : "gray.100"
+                        }
+                        color={
+                          filterState.dietary["dietary-2"] ? "white" : "black"
+                        }
+                      >
+                        Vegan
+                      </Button>
+                    </VStack>
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </Flex>
+      {mainData ? (
+        mainData.map((item) => {
+          return <Section data={item} key={item._id} />;
+        })
+      ) : (
+        <Skeleton width={{ base: "100vw", lg: "65vw" }} height="300px" />
+      )}
     </Flex>
   );
 };

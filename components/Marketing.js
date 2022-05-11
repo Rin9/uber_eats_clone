@@ -162,9 +162,8 @@ const Marketing = ({ marketingData }) => {
     <Box
       position={"relative"}
       height={"250px"}
-      maxW="full"
+      width={{ base: "100vw", lg: "100vw" }}
       overflow={"hidden"}
-      mx="20px"
       my="50px"
     >
       {/* CSS files for react-slick */}

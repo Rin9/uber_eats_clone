@@ -5,7 +5,14 @@ import MainLeft from "./parts/MainLeft";
 
 const Main = ({ mainData }) => {
   return (
-    <Flex mx="0" px="0" position="relative" height="100vh" pt="30px">
+    <Flex
+      mx="0"
+      px="0"
+      position="relative"
+      height="100vh"
+      pt="30px"
+      maxW="100vw"
+    >
       {/* left filter */}
       <MainLeft />
       {/* right content */}

@@ -10,7 +10,7 @@ import { useAppContext } from "../context/AppContext";
 export default function Home({
   bannerData,
   marketingData,
-  mainData,
+  // mainData,
   isLoaded,
 }) {
   const { setIsLoaded } = useAppContext();
@@ -29,7 +29,8 @@ export default function Home({
       <Navbar />
       <Banner bannerData={bannerData} />
       <Marketing marketingData={marketingData} />
-      <Main mainData={mainData} />
+      {/* <Main mainData={mainData} /> */}
+      <Main />
     </div>
   );
 }
@@ -42,16 +43,16 @@ export const getStaticProps = async () => {
   const marketingQuery = `*[_type == "marketing"]`;
   const marketingData = await client.fetch(marketingQuery);
   //get main data
-  const mainQuery = `*[_type == "mainTypes"]{
-    _id, name,items[]->
-  }`;
-  const mainData = await client.fetch(mainQuery);
+  // const mainQuery = `*[_type == "mainTypes"]{
+  //   _id, name,items[]->
+  // }`;
+  // const mainData = await client.fetch(mainQuery);
 
   return {
     props: {
       bannerData,
       marketingData,
-      mainData,
+      // mainData,
       isLoaded: true,
     },
   };
