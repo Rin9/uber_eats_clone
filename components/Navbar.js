@@ -124,8 +124,8 @@ const Navbar = () => {
         justify="space-between"
         align="center"
         columnGap="10px"
-        pr="30px"
-        maxW="20vw"
+        pr={{ base: "10px", lg: "30px" }}
+        minW="10vw"
       >
         {/* This is cart button */}
         <Popover isOpen={isOpen} onClose={handleCloseCart}>
@@ -141,7 +141,7 @@ const Navbar = () => {
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            width="500px"
+            width={{ base: "300px", lg: "500px" }}
             mr="20px"
             transitionDuration="500ms"
             transitionTimingFunction="ease-in-out"
@@ -157,9 +157,12 @@ const Navbar = () => {
         </Popover>
         {/* sign in button */}
         <Link href={"/auth/signin"} passHref>
-          <Button leftIcon={<GoSignIn />} colorScheme="gray" variant="solid">
-            {session ? <AiOutlineUser /> : "Sign In"}
-          </Button>
+          <Button
+            leftIcon={session ? <AiOutlineUser /> : "Sign In"}
+            colorScheme="gray"
+            variant="solid"
+            pr="10px"
+          />
         </Link>
       </Flex>
     </Flex>
