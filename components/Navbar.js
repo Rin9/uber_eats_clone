@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import {
   IconButton,
   Flex,
@@ -11,12 +11,19 @@ import {
   PopoverHeader,
   PopoverBody,
   useDisclosure,
+  Box,
 } from "@chakra-ui/react";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineShoppingCart, AiOutlineUser } from "react-icons/ai";
+import { GoSignIn } from "react-icons/go";
 import Image from "next/image";
 import logo from "../public/assets/logo.svg";
 import DrawerComponent from "./parts/DrawerComponent";
+import Link from "next/link";
+import Cart from "./Cart/Cart";
+import useWindowOffsetY from "../lib/utils/useWindowOffsetY";
+import { useCartContext } from "../context/CartContext";
+import { useSession } from "next-auth/react";
 
 // const SwitchComponent = () => {
 //   const { isDelivery, setIsDelivery } = useAppContext();
@@ -39,7 +46,40 @@ import DrawerComponent from "./parts/DrawerComponent";
 // };
 
 const Navbar = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const { totalQuantities, toggleCartItemQuanitity } = useCartContext();
+
+  // get session from next-auth
+  const { data: session } = useSession();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleCloseCart = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+  const handleOpenCart = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, []);
+
+  const cartEl = useRef(null);
+  // const [clientHeight, setClientHeight] = useState(0);
+
+  const scrollY = useWindowOffsetY();
+  // console.log("object", scrollY);
+
+  let progress = 0;
+  const { current: elContainer } = cartEl;
+
+  if (elContainer) {
+    progress = Math.min(1, scrollY / elContainer.clientHeight);
+  }
+
+  useEffect(() => {
+    if (progress >= 0.5) {
+      handleCloseCart();
+    }
+  }, [progress]);
 
   return (
     // Main container of the navbar
@@ -51,7 +91,12 @@ const Navbar = () => {
       flexDirection="row"
       align="center"
       justify="space-between"
-      columnGap="10"
+      position="fixed"
+      top="0"
+      left="0"
+      zIndex="10"
+      backgroundColor="white"
+      m="0"
     >
       {/* logo and burger menu */}
       <Flex
@@ -60,38 +105,63 @@ const Navbar = () => {
         width="200px"
         marginLeft={{ base: "5", md: "10" }}
       >
-        <IconButton
+        {/* <IconButton
           aria-label="menu"
           icon={<GiHamburgerMenu size="25" />}
           onClick={onOpen}
-        />
-        <DrawerComponent isOpen={isOpen} onClose={onClose} />
-        <Image src={logo} height="80" alt="logo" />
+        /> */}
+        {/* <DrawerComponent isOpen={isOpen} onClose={onClose} /> */}
+        <Link href="/" passHref>
+          <Box cursor="pointer">
+            <Image src={logo} height="80" alt="logo" />
+          </Box>
+        </Link>
       </Flex>
       {/* switch for dilivery or pickup*/}
       {/* {width >= 400 && <SwitchComponent />} */}
 
-      <Popover>
-        <PopoverTrigger>
-          <Button
-            leftIcon={<AiOutlineShoppingCart />}
-            colorScheme="blackAlpha"
-            backgroundColor="black"
-            variant="solid"
-            marginRight={{ base: "5", md: "10" }}
+      <Flex
+        justify="space-between"
+        align="center"
+        columnGap="10px"
+        pr="30px"
+        maxW="20vw"
+      >
+        {/* This is cart button */}
+        <Popover isOpen={isOpen} onClose={handleCloseCart}>
+          <PopoverTrigger>
+            <Button
+              leftIcon={<AiOutlineShoppingCart />}
+              colorScheme="blackAlpha"
+              backgroundColor="black"
+              variant="solid"
+              onClick={handleOpenCart}
+            >
+              Cart | {totalQuantities}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            width="500px"
+            mr="20px"
+            transitionDuration="500ms"
+            transitionTimingFunction="ease-in-out"
+            ref={cartEl}
           >
-            Cart
+            <PopoverArrow />
+            <PopoverCloseButton />
+            <PopoverHeader>Cart</PopoverHeader>
+            <PopoverBody>
+              <Cart />
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
+        {/* sign in button */}
+        <Link href={"/auth/signin"} passHref>
+          <Button leftIcon={<GoSignIn />} colorScheme="gray" variant="solid">
+            {session ? <AiOutlineUser /> : "Sign In"}
           </Button>
-        </PopoverTrigger>
-        <PopoverContent>
-          <PopoverArrow />
-          <PopoverCloseButton />
-          <PopoverHeader>Confirmation!</PopoverHeader>
-          <PopoverBody>
-            Are you sure you want to have that milkshake?
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
+        </Link>
+      </Flex>
     </Flex>
   );
 };

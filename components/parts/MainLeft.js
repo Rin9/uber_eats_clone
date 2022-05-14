@@ -94,7 +94,6 @@ const MainLeft = () => {
       maxH="100vw"
       display={{ base: "none", lg: "flex" }}
     >
-      <Heading as={"h3"}>80 stores</Heading>
       {/* todo: fix the link */}
       {/* <Link href="/" passHref>
                 <InnerLink textDecor="underline">Clear All</InnerLink>

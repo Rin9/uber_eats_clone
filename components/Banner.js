@@ -38,6 +38,7 @@ const Banner = ({ bannerData }) => {
   const { isLoaded } = useAppContext();
   return (
     <Flex
+      marginTop="100px"
       minH="150px"
       boxShadow="md"
       rounded="md"

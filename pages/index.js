@@ -35,7 +35,7 @@ export default function Home({
   );
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   //get banner data
   const bannerQuery = `*[_type == "banner"]`;
   const bannerData = await client.fetch(bannerQuery);

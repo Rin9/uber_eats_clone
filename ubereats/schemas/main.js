@@ -37,9 +37,20 @@ export default {
       type: "number",
     },
     {
+      name: "priceRange",
+      title: "PriceRange",
+      type: "number",
+    },
+    {
       name: "deliveryFee",
       title: "DeliveryFee",
       type: "number",
+    },
+    {
+      name: "dietary",
+      title: "Dietary",
+      type: "array",
+      of: [{ type: "string" }],
     },
     {
       name: "minDeliveryTime",
@@ -56,6 +67,17 @@ export default {
       title: "Type",
       type: "reference",
       to: [{ type: "mainTypes" }],
+    },
+    {
+      name: "products",
+      title: "Products",
+      type: "array",
+      of: [
+        {
+          type: "reference",
+          to: { type: "product" },
+        },
+      ],
     },
   ],
 };

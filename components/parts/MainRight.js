@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
   Flex,
   Heading,
@@ -71,40 +71,48 @@ const settings = {
 const SectionItem = ({ item }) => {
   return (
     // <Skeleton height="200px" width="200px">
-    <Flex direction="column" rowGap="10px" justify="flex-start">
-      <Box
-        key={item._id}
-        minW="calc(25% - 15px)"
-        height="150px"
-        backgroundImage={`${urlFor(item.image)}`}
-        backgroundPosition="center"
-        backgroundRepeat="no-repeat"
-        backgroundSize="cover"
-        mr="30px"
-      />
-      {/* name and score */}
-      <Flex justify="space-between" pr="30px" align="flex-start">
-        <Heading as={"h2"} fontSize="md">
-          {truncate(item.name, 30)}
-        </Heading>
+    <Link href={`/products/${item._id}`} passHref>
+      <Flex
+        direction="column"
+        rowGap="10px"
+        justify="flex-start"
+        cursor="pointer"
+      >
         <Box
-          backgroundColor="gray.200"
-          rounded="full"
-          p="1"
-          fontSize="xs"
-          fontWeight="semibold"
-        >
-          {item.score / 10}
-        </Box>
+          key={item._id}
+          minW="calc(25% - 15px)"
+          height="150px"
+          backgroundImage={`${urlFor(item.image)}`}
+          backgroundPosition="center"
+          backgroundRepeat="no-repeat"
+          backgroundSize="cover"
+          mr="30px"
+        />
+
+        {/* name and score */}
+        <Flex justify="space-between" pr="30px" align="flex-start">
+          <Heading as={"h2"} fontSize="md">
+            {truncate(item.name, 30)}
+          </Heading>
+          <Box
+            backgroundColor="gray.200"
+            rounded="full"
+            p="1"
+            fontSize="xs"
+            fontWeight="semibold"
+          >
+            {item.score / 10}
+          </Box>
+        </Flex>
+        {/* delivery tag */}
+        <Flex align="center">
+          {formatPrice(parseInt(item.deliveryFee))} Delivery Fee &nbsp;•&nbsp;
+          <Text fontWeight="lighter">
+            {item.minDeliveryTime} - {item.maxDeliveryTime} min
+          </Text>
+        </Flex>
       </Flex>
-      {/* delivery tag */}
-      <Flex align="center">
-        {formatPrice(parseInt(item.deliveryFee))} Delivery Fee &nbsp;•&nbsp;
-        <Text fontWeight="lighter">
-          {item.minDeliveryTime} - {item.maxDeliveryTime} min
-        </Text>
-      </Flex>
-    </Flex>
+    </Link>
     // </Skeleton>
   );
 };
@@ -237,7 +245,7 @@ const MainRight = () => {
     `/api/data/${JSON.stringify(filterState)}`,
     fetcher
   );
-  console.log("Fetched data", mainData);
+  // console.log("Fetched data", mainData);
 
   return (
     <Flex
@@ -259,7 +267,6 @@ const MainRight = () => {
               </AccordionButton>
             </h2>
             <AccordionPanel pb={4}>
-              <Heading as={"h3"}>80 stores</Heading>
               {/* todo: fix the link */}
               {/* <Link href="/" passHref>
                 <InnerLink textDecor="underline">Clear All</InnerLink>

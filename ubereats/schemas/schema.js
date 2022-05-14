@@ -6,9 +6,10 @@ import banner from "./banner";
 import marketing from "./marketing";
 import main from "./main";
 import mainTypes from "./mainTypes";
+import product from "./product";
 
 export default createSchema({
   // We name our schema
   name: "default",
-  types: schemaTypes.concat([banner, marketing, main, mainTypes]),
+  types: schemaTypes.concat([banner, marketing, main, mainTypes, product]),
 });
