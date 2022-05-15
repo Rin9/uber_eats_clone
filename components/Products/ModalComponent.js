@@ -25,8 +25,6 @@ const ModalComponent = ({
   productNum,
   setProductNum,
 }) => {
-  // console.log("This is productInfo", productInfo);
-  // const [productNum, setProductNum] = useState(1);
   const { onAdd } = useCartContext();
 
   const handleProdutChange = (type) => {
@@ -41,10 +39,10 @@ const ModalComponent = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{productInfo?.name}</ModalHeader>
+      <ModalContent width="90vw">
+        {/* <ModalHeader>{productInfo?.name}</ModalHeader> */}
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody mt="50px">
           <Flex flexDir="column">
             <Image
               src={productInfo ? `${urlFor(productInfo?.image)}` : ""}

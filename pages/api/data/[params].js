@@ -8,7 +8,6 @@ export default async function dataHandler({ query: { params } }, res) {
   // } else {
   //   res.status(404).json({ message: `User with id: ${id} not found.` });
   // }
-  // console.log("======params=====", JSON.parse(params));
   const queryParams = JSON.parse(params);
   let sortCondition;
   let dealsConditon = "";
@@ -119,7 +118,6 @@ export default async function dataHandler({ query: { params } }, res) {
   //     maxDeliveryTime
   //   }
   // }`;
-  // console.log(mainQuery);
   const mainData = await client.fetch(mainQuery);
   res.status(200).json(mainData);
   // res.status(200).json({ name: "John Doe" });

@@ -66,7 +66,6 @@ const Navbar = () => {
   // const [clientHeight, setClientHeight] = useState(0);
 
   const scrollY = useWindowOffsetY();
-  // console.log("object", scrollY);
 
   let progress = 0;
   const { current: elContainer } = cartEl;
@@ -141,14 +140,14 @@ const Navbar = () => {
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            width={{ base: "300px", lg: "500px" }}
+            width={{ base: "350px", lg: "500px" }}
             mr="20px"
             transitionDuration="500ms"
             transitionTimingFunction="ease-in-out"
             ref={cartEl}
           >
             <PopoverArrow />
-            <PopoverCloseButton />
+            <PopoverCloseButton onClick={handleCloseCart} />
             <PopoverHeader>Cart</PopoverHeader>
             <PopoverBody>
               <Cart />

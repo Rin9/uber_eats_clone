@@ -193,8 +193,6 @@ const MainRight = () => {
       // setSortState(e.target.value);
     }
     if (type.includes("switch")) {
-      // console.log("This is e", e);
-      // console.log("This is type", type);
       setFilterState((prev) => {
         return {
           ...prev,
@@ -245,7 +243,6 @@ const MainRight = () => {
     `/api/data/${JSON.stringify(filterState)}`,
     fetcher
   );
-  // console.log("Fetched data", mainData);
 
   return (
     <Flex

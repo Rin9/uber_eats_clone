@@ -63,10 +63,8 @@ const ProductsComponents = ({ productsData }) => {
                 }}
                 position="relative"
                 maxH="400px"
-                minWidth="300px"
                 flexDir="column"
                 rowGap="10px"
-                p="10px"
                 cursor="pointer"
                 onClick={() => {
                   setProductInfo(item);
@@ -80,7 +78,6 @@ const ProductsComponents = ({ productsData }) => {
                   backgroundRepeat="no-repeat"
                   backgroundSize="cover"
                   height="200px"
-                  minWidth="300px"
                   transition="all"
                   transitionDuration="300ms"
                   transitionTimingFunction="ease-in"
@@ -95,7 +92,6 @@ const ProductsComponents = ({ productsData }) => {
                   top="10px"
                   right="10px"
                   colorScheme="black"
-                  zIndex="10"
                   _hover={{
                     bgColor: "gray",
                   }}

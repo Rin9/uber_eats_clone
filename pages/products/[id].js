@@ -6,7 +6,6 @@ import ProductsComponents from "../../components/Products/ProductsComponents";
 import ErrorComponent from "../../components/parts/ErrorComponent";
 
 const Products = ({ productsData }) => {
-  console.log("This is products in page", productsData.products?.length);
   // const [products, setProducts] = useState();
   // useEffect(() => {
   //   setProducts(productsData);
@@ -51,7 +50,6 @@ export const getServerSideProps = async ({ params }) => {
     }
   }`;
   const productsData = await client.fetch(productsQuery);
-  // console.log("products", productsData);
   if (productsData.products === null) {
     productsData.products = [];
   }

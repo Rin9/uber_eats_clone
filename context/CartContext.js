@@ -1,18 +1,22 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const Context = createContext();
 
-const getLocalStorage = () => {
+const getLocalStorage = (session) => {
   if (typeof window !== "undefined") {
-    let cartObj = localStorage.getItem("cart");
+    let cartObj = localStorage.getItem(`cart-${session?.user?.email}`);
     if (!cartObj) {
       const newCartObj = {
         cart: [],
         totalPrice: 0,
         totalQuantities: 0,
       };
-      localStorage.setItem("cart", JSON.stringify(newCartObj));
+      localStorage.setItem(
+        `cart-${session?.user?.email}`,
+        JSON.stringify(newCartObj)
+      );
       return newCartObj;
     }
     return JSON.parse(cartObj);
@@ -20,24 +24,32 @@ const getLocalStorage = () => {
 };
 
 export const CartContext = ({ children }) => {
-  const [cartObj, setCartObj] = useState(getLocalStorage());
+  const { data: session } = useSession();
+
+  const [cartObj, setCartObj] = useState({
+    cart: [],
+    totalPrice: 0,
+    totalQuantities: 0,
+  });
+
+  useEffect(() => {
+    setCartObj(getLocalStorage(session));
+  }, [session]);
+
   const [totalPrice, setTotalPrice] = useState(cartObj?.totalPrice);
 
   const [totalQuantities, setTotalQuantities] = useState(
     cartObj?.setTotalQuantities
   );
   const [qty, setQty] = useState(1);
-  // console.log("this is cartObj", cartObj);
 
   let foundProduct;
 
   const onAdd = (product, quantity) => {
-    // console.log("In the onADD func", cartObj);
     const checkProductInCart = cartObj.cart.find(
       (item) => item._id === product._id
     );
     if (checkProductInCart) {
-      // console.log("old product");
       const updatedCartItems = cartObj.cart.map((cartProduct) => {
         if (cartProduct._id === product._id) {
           return {
@@ -61,7 +73,6 @@ export const CartContext = ({ children }) => {
         };
       });
     } else {
-      // console.log("New product");
       product.quantity = quantity;
       const totalPrice = quantity * product.price;
 
@@ -129,10 +140,27 @@ export const CartContext = ({ children }) => {
     }
   };
 
+  //remove item from the cart
+  const removeCartItem = (id) => {
+    foundProduct = cartObj.cart.find((item) => item._id === id);
+    const updatedCartItems = cartObj.cart.filter(
+      (cartProduct) => cartProduct._id !== id
+    );
+    setCartObj((prevObj) => {
+      return {
+        ...prevObj,
+        cart: updatedCartItems,
+        totalQuantities: prevObj.totalQuantities - foundProduct.quantity,
+        totalPrice:
+          prevObj.totalPrice - foundProduct.price * foundProduct.quantity,
+      };
+    });
+  };
+
   useEffect(() => {
     // const totalPrice = cartObj.totalPrice;
     localStorage.setItem(
-      "cart",
+      `cart-${session?.user?.email}`,
       JSON.stringify({
         cart: cartObj.cart,
         totalPrice: cartObj.totalPrice,
@@ -152,6 +180,7 @@ export const CartContext = ({ children }) => {
         totalQuantities,
         toggleCartItemQuanitity,
         onAdd,
+        removeCartItem,
       }}
     >
       {children}
