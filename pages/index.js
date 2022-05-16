@@ -6,6 +6,7 @@ import Marketing from "../components/Marketing";
 import Main from "../components/Main";
 import { client } from "../lib/client";
 import { useAppContext } from "../context/AppContext";
+import Footer from "../components/Footer";
 
 export default function Home({
   bannerData,
@@ -31,6 +32,7 @@ export default function Home({
       <Marketing marketingData={marketingData} />
       {/* <Main mainData={mainData} /> */}
       <Main />
+      <Footer />
     </div>
   );
 }

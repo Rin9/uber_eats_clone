@@ -157,6 +157,14 @@ export const CartContext = ({ children }) => {
     });
   };
 
+  const initalizeCart = () => {
+    setCartObj({
+      cart: [],
+      totalPrice: 0,
+      totalQuantities: 0,
+    });
+  };
+
   useEffect(() => {
     // const totalPrice = cartObj.totalPrice;
     localStorage.setItem(
@@ -181,6 +189,7 @@ export const CartContext = ({ children }) => {
         toggleCartItemQuanitity,
         onAdd,
         removeCartItem,
+        initalizeCart,
       }}
     >
       {children}

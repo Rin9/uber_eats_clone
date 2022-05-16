@@ -10,20 +10,23 @@ import {
   PopoverCloseButton,
   PopoverHeader,
   PopoverBody,
-  useDisclosure,
+  Text,
   Box,
+  PopoverFooter,
 } from "@chakra-ui/react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineShoppingCart, AiOutlineUser } from "react-icons/ai";
 import { GoSignIn } from "react-icons/go";
 import Image from "next/image";
 import logo from "../public/assets/logo.svg";
-import DrawerComponent from "./parts/DrawerComponent";
 import Link from "next/link";
 import Cart from "./Cart/Cart";
 import useWindowOffsetY from "../lib/utils/useWindowOffsetY";
 import { useCartContext } from "../context/CartContext";
 import { useSession } from "next-auth/react";
+import getStripe from "../lib/utils/getStripe";
+import { formatPrice } from "../lib/utils/util";
+import toast from "react-hot-toast";
 
 // const SwitchComponent = () => {
 //   const { isDelivery, setIsDelivery } = useAppContext();
@@ -48,7 +51,7 @@ import { useSession } from "next-auth/react";
 const Navbar = () => {
   // const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { totalQuantities, toggleCartItemQuanitity } = useCartContext();
+  const { totalQuantities, cartObj, initalizeCart } = useCartContext();
 
   // get session from next-auth
   const { data: session } = useSession();
@@ -79,6 +82,27 @@ const Navbar = () => {
       handleCloseCart();
     }
   }, [progress]);
+
+  const handleCheckOut = async () => {
+    const stripe = await getStripe();
+
+    const response = await fetch("/api/stripe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(cartObj),
+    });
+    if (response.statusCode === 500) return;
+
+    const data = await response.json();
+
+    toast.loading("Redirecting...");
+
+    initalizeCart();
+
+    stripe.redirectToCheckout({ sessionId: data.id });
+  };
 
   return (
     // Main container of the navbar
@@ -152,6 +176,20 @@ const Navbar = () => {
             <PopoverBody>
               <Cart />
             </PopoverBody>
+            <PopoverFooter textAlign="center">
+              <Flex justifyContent="space-around" align="center">
+                <Text fontWeight="900" fontSize="lg">
+                  Total : {formatPrice(cartObj.totalPrice)}
+                </Text>
+                <Button
+                  colorScheme="green"
+                  onClick={handleCheckOut}
+                  disabled={cartObj.totalQuantities === 0}
+                >
+                  Check Out
+                </Button>
+              </Flex>
+            </PopoverFooter>
           </PopoverContent>
         </Popover>
         {/* sign in button */}
