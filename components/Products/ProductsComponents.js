@@ -31,7 +31,7 @@ const ProductsComponents = ({ productsData }) => {
       priceRange = "$";
   }
   return (
-    <Box mt="100px" px="50px" width="100vw" minH="200px">
+    <Box mt="100px" px="50px" width="100vw" minH="800px">
       <Flex pt="50px" flexDir="column" rowGap="10px" maxW="100vw">
         <Heading as={"h1"}>{data.name}</Heading>
         <Flex justify="flex-start" align="center">

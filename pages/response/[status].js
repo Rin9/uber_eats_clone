@@ -10,7 +10,9 @@ import {
   AlertDescription,
   Text,
   Button,
+  Container,
 } from "@chakra-ui/react";
+import Footer from "../../components/Footer";
 
 const StatusPage = ({ status }) => {
   const router = useRouter();
@@ -26,7 +28,7 @@ const StatusPage = ({ status }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <Flex justify="center" align="center" mt="100px" height="500px">
+      <Container mt="100px" pt="100px" height="500px">
         <Alert
           status={status === "success" ? status : "warning"}
           variant="subtle"
@@ -34,10 +36,11 @@ const StatusPage = ({ status }) => {
           alignItems="center"
           justifyContent="center"
           textAlign="center"
-          height="500px"
+          height="300px"
+          rounded="md"
         >
           <AlertIcon boxSize="40px" mr={0} />
-          <AlertTitle mt={4} mb={1} fontSize="lg">
+          <AlertTitle mt={4} mb={4} fontSize="lg">
             {status === "success" ? "Success!" : "Oops..."}
           </AlertTitle>
           <AlertDescription maxWidth="sm">
@@ -67,7 +70,8 @@ const StatusPage = ({ status }) => {
             </Flex>
           </AlertDescription>
         </Alert>
-      </Flex>
+      </Container>
+      <Footer />
     </div>
   );
 };

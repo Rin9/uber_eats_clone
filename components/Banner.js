@@ -6,7 +6,7 @@ import { useAppContext } from "../context/AppContext";
 
 const BannerItem = ({ item, isLoaded }) => {
   return (
-    <Link href="/" passHref>
+    <Link href={`/store/${item.text}`} passHref>
       <Skeleton isLoaded={isLoaded}>
         <VStack minW="90px">
           <Image
@@ -36,6 +36,8 @@ const BannerItem = ({ item, isLoaded }) => {
 
 const Banner = ({ bannerData }) => {
   const { isLoaded } = useAppContext();
+
+  console.log("first", bannerData);
   return (
     <Flex
       marginTop="100px"

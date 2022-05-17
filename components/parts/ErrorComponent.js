@@ -14,7 +14,7 @@ const ErrorComponent = () => {
   // nextjs router, to push user to the home page
   const router = useRouter();
   return (
-    <Container mt="100px" pt="100px">
+    <Container mt="100px" pt="100px" height="500px">
       <Alert
         status="error"
         variant="subtle"

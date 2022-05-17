@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import { client } from "../../lib/client";
 import ProductsComponents from "../../components/Products/ProductsComponents";
 import ErrorComponent from "../../components/parts/ErrorComponent";
+import Footer from "../../components/Footer";
 
 const Products = ({ productsData }) => {
   // const [products, setProducts] = useState();
@@ -24,6 +25,7 @@ const Products = ({ productsData }) => {
       ) : (
         <ErrorComponent />
       )}
+      <Footer />
     </div>
   );
 };
